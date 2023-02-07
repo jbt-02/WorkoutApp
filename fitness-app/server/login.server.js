@@ -75,7 +75,23 @@ app.post("/userPage", (req,res) => {
     );  
 });
 
-
+app.post("/createSession", (req,res) => {
+    db.query(
+        "SELECT * FROM exercises",
+        (err, result) => {
+            if(err){
+                res.send({err:err});
+                console.log(err);
+            }else if(result){
+                res.send(result);
+                console.log(result);
+            }else{
+                res.send({message:"No Exercises"});
+                console.log("ERR");
+            }
+        }
+    );
+});
 app.listen(3001, () => {
     console.log("running");
 });

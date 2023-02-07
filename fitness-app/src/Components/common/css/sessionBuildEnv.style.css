@@ -1,0 +1,17 @@
+.textarea{
+    resize: none;
+}
+
+#sessionEnv{
+    background-color: lightgrey;
+}
+
+#addExercise{
+    background-color: white;
+    border-style: solid;
+    border-color: black;
+}
+
+li{
+    cursor:pointer;
+}
