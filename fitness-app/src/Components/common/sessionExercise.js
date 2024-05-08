@@ -1,14 +1,36 @@
 import { useState } from 'react';
 
 function SessionExercise(props){
-    const [sets, setSets] = useState([]);
+    const [sets, setSets] = useState([{id: 0, reps: 0, weight: 0}]);
     
     const handleSetSets = () => {
-        setSets([...sets, sets.length + 1]);
+        setSets([...sets, {id: sets.length, reps: 0, weight: 0}]);
     };
 
     const handleDeleteSet = (index) => {
         setSets(sets.filter((set, i) => i !== index))
+    }
+
+    const handleSetReps = (id, val) => {
+        const updatedSets = sets.map(set => {
+            if(set.id == id){
+                return {...set, ...val};
+            }
+            return set;
+        });
+        
+        setSets(updatedSets);
+    }
+
+    const handleSetWeight = (id, val) => {
+        const updatedSets = sets.map(set => {
+            if(set.id == id){
+                return {...set, ...val};
+            }
+            return set;
+        });
+        
+        setSets(updatedSets);
     }
 
     const handleReplacingExercise = () => {
@@ -31,24 +53,18 @@ function SessionExercise(props){
                             <li><button onClick={() => handleReplacingExercise()} className="dropdown-item" >Replace Exericse</button></li>
                             <li><a className="dropdown-item" href="#">Weight Unit</a></li>
                             <li><button onClick={() => props.deleteExercise()}className="dropdown-item" >Remove Exercise</button></li>
+                            <li><button onClick={() => props.adjustExercise()}className="dropdown-item" >Adjust Exercises</button></li>
                         </ul>
                     </div>   
                 </div>
                 <div>
-                    <div className="row">
-                        <div className="col input-group mb-3">
-                            <span className="input-group-text">1</span>
-                            <input className="form-control" type="number" placeholder="reps"></input>
-                            <input className="form-control" type="number" placeholder="weight"></input>
-                        </div>
-                    </div>
                     {sets.map((set, index) => {
                         return(
-                        <div key={`${set}${index}`} className="row">
+                        <div key={`${set}${index}`} id ={`${index}`}className="row">
                             <div className="col input-group mb-3">
-                                <span className="input-group-text">{index + 2}</span>
-                                <input className="form-control" type="number" placeholder="reps" id={index + 1}></input>
-                                <input className="form-control" type="number" placeholder="weight" id={index + 1}></input>
+                                <span className="input-group-text">{index + 1}</span>
+                                <input className="form-control" type="number" value={(set.reps != 0) ? set.reps : ""} onChange={(e) => handleSetReps(index, {reps: parseInt(e.target.value)}) } placeholder="reps" id={index + 1}></input>
+                                <input className="form-control" type="number" value={(set.weight != 0) ? set.weight : ""} onChange={(e) => handleSetWeight(index, {weight: parseInt(e.target.value)})} placeholder="weight" id={index + 1}></input>
                                 <button onClick={() => handleDeleteSet(index)} className="btn btn-danger btn-sm">X</button>
                             </div>
                         </div>
