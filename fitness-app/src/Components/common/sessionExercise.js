@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function SessionExercise(props){
     const [sets, setSets] = useState([{id: 0, reps: 0, weight: 0}]);
+    const[setDeleted, setSetDeleted] = useState(false);
     
     const handleSetSets = () => {
         setSets([...sets, {id: sets.length, reps: 0, weight: 0}]);
     };
 
     const handleDeleteSet = (index) => {
-        setSets(sets.filter((set, i) => i !== index))
+        setSets(sets.filter(set => set.id !== index));
+        setSetDeleted(true);
     }
 
     const handleSetReps = (id, val) => {
@@ -37,6 +39,20 @@ function SessionExercise(props){
         props.setIsReplacingExercise();
         props.setExerciseList(true);
     }
+
+    useEffect(() => {
+        if(setDeleted){
+            const updateSetId = sets.map((set, index) => {
+                set.id = index;
+                return set;
+            });
+
+            setSets(updateSetId);
+            setSetDeleted(false);
+        }
+        
+
+    }, [sets]);
 
     return(
         <div className="row bg-white pt-1 pb-4" id={props.eid}>
