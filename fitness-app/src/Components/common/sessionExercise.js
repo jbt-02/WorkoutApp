@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 
-function SessionExercise(props){
+function SessionExercise(props, eid_num, exercise_name){
+    const [eid, setEid] = useState(eid_num);
+    const [name, setName] = useState(exercise_name);
     const [sets, setSets] = useState([{id: 0, reps: 0, weight: 0}]);
     const[setDeleted, setSetDeleted] = useState(false);
     
@@ -69,7 +71,7 @@ function SessionExercise(props){
                             <li><button onClick={() => handleReplacingExercise()} className="dropdown-item" >Replace Exericse</button></li>
                             <li><a className="dropdown-item" href="#">Weight Unit</a></li>
                             <li><button onClick={() => props.deleteExercise()}className="dropdown-item" >Remove Exercise</button></li>
-                            <li><button onClick={() => props.adjustExercise()}className="dropdown-item" >Adjust Exercises</button></li>
+                            <li><button onClick={() => props.adjustExerciseModalVisible()}className="dropdown-item" >Adjust Exercises</button></li>
                         </ul>
                     </div>   
                 </div>
