@@ -21,7 +21,6 @@ function SessionBuildEnv(){
     const sortableContainerRef = useRef(null);
     const [sortableInstance, setSortableInstance] = useState(null);
     const [sortedList, setSortedList] = useState([]);
-    const [adjustModal, setAdjustModal] = useState(false);
 
     const handleSetExerciseListEnv = (setExerciseList) =>{
         if(!setExerciseList){
@@ -58,7 +57,7 @@ function SessionBuildEnv(){
 
     useEffect(() => {
         initializeSortable();
-    }, [adjustModal]);
+    });
 
     const initializeSortable = () => {
         if(sortableContainerRef.current){
@@ -70,11 +69,6 @@ function SessionBuildEnv(){
         }
     }
 
-    const handleAdjustButton = () => {
-        setWorkoutExerciseList(sortedList);
-        setAdjustModal(false);
-    }
-
     const handleSortEnd = (event) => {
         const { newIndex, oldIndex} = event;
         setSortedList((prevList) => {
@@ -84,6 +78,8 @@ function SessionBuildEnv(){
                 newExerciseList.splice(newIndex, 0, removed);
                 return newExerciseList;
             }
+            setWorkoutExerciseList(sortedList);
+
             return null;
         });
     }
@@ -117,39 +113,15 @@ function SessionBuildEnv(){
                 <div className="form-group row pb-3">
                     <textarea className="form-control col-sm-6 textarea" rows="10" placeholder="Warmup"></textarea>
                 </div>
-                {adjustModal && (
-                    <div className="modal" id="myModal">
-                        <div className="modal-dialog">
-                            <div className="modal-content">                  
-                                <div className="modal-header">
-                                    <h4 className="modal-title">Adjust Exercises</h4>
-                                    <button onClick={() => setAdjustModal(false)} type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div className="modal-body">
-                                    <ul className="list-group" ref={sortableContainerRef}>
-                                        {workoutExerciseList ? workoutExerciseList.map((obj, index) => (
-                                                <li key={index + 1} id={index + obj.eid} className="list-group-item">{obj.name}</li>
-                                            )) : <p>Loading...</p>
-                                        }
-                                    </ul>
-                                </div>
-                                <div class="modal-footer">
-                                    <button onClick={() => handleAdjustButton()} class="btn btn-primary" data-bs-dismiss="modal">Change</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
                 {workoutExerciseList ? Object.values(workoutExerciseList).map((obj, index) => (
                         <SessionExercise
                         key={`Exercise-${index}`} 
                         index={index + 1}
-                        eid={obj.eid}
-                        name={obj.name}
+                        eid={obj.props.eid}
+                        name={obj.props.exercise_name}
                         deleteExercise={() => handleDeleteExercise(index)}
                         setExerciseList = {() => handleSetExerciseListEnv()}
                         setIsReplacingExercise = {() => setIsReplacingExercise({isReplace: true, oldExercise: index})}
-                        adjustExerciseModalVisible = {setAdjustModal}
                         />
                 )) : <p>Loading...</p>}
                 <button className="btn btn-default" onClick={() =>{handleSetExerciseListEnv()}} id="addExercise">Add Exercise</button>            
