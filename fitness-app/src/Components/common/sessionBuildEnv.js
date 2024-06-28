@@ -10,6 +10,7 @@ function SessionBuildEnv(){
     const [title, setTitle] = useState("");
     const [exerciseListEnv, setExerciseListEnv] = useState(false);
     const [exerciseList, setExerciseList] = useState({}); 
+    const [searchBarQuery, setSearchBarQuery] = useState('');
     const [exerciseSelected, setExerciseSelected] = useState({});
     const [workoutExerciseList, setWorkoutExerciseList] = useState([]);
     const [isReplacingExercise, setIsReplacingExercise] = useState({
@@ -17,7 +18,9 @@ function SessionBuildEnv(){
         oldExercise: null
     });
 
-    const sortableContainerRef = useRef(null);
+    const filteredExercises = Object.values(exerciseList).filter(item => 
+        item.name.toLowerCase().includes(searchBarQuery.toLowerCase())
+    );
 
     const handleSetExerciseListEnv = (setExerciseList) =>{
         if(!setExerciseList){
@@ -93,9 +96,9 @@ function SessionBuildEnv(){
                 <button className="btn btn-default" onClick={() => { handleSetExerciseListEnv() }} id="addExercise">Add Exercise</button>            
             </div>
             <div style={{ display: exerciseListEnv ? "block" : "none" }} className="container-fluid text-center pt-4 pb-4" id="sessionEnv">
-                <SearchBar />
+                <SearchBar query={searchBarQuery} setQuery={setSearchBarQuery}/>
                 <ul className="list-group">
-                    {exerciseList ? Object.values(exerciseList).map((obj, index) => (
+                    {exerciseList ? Object.values(filteredExercises).map((obj, index) => (
                         <li 
                             key={`preSet-${index}`}
                             className={`list-group-item ${exerciseSelected.eid === obj.eid ? 'active' : ''}`} 
