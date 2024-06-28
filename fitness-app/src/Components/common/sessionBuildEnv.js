@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import Sortable from 'sortablejs';
 import Axios from 'axios';
 
 import SearchBar from './searchBar';
@@ -19,8 +18,6 @@ function SessionBuildEnv(){
     });
 
     const sortableContainerRef = useRef(null);
-    const [sortableInstance, setSortableInstance] = useState(null);
-    const [sortedList, setSortedList] = useState([]);
 
     const handleSetExerciseListEnv = (setExerciseList) =>{
         if(!setExerciseList){
@@ -28,7 +25,7 @@ function SessionBuildEnv(){
         }
         setExerciseListEnv(true);
 
-        if(Object.keys(exerciseList).length == 0){
+        if(Object.keys(exerciseList).length === 0){
             grabExercises();
         }
     }
@@ -44,7 +41,7 @@ function SessionBuildEnv(){
             handleReplaceExercise(isReplacingExercise.oldExercise, newExercise);
             console.log("replace");
             setIsReplacingExercise({isReplace: false, oldExercise: null});
-        }else{
+        } else {
             setWorkoutExerciseList([
                 ...workoutExerciseList, newExercise
             ]);
@@ -52,36 +49,6 @@ function SessionBuildEnv(){
             console.log(workoutExerciseList);    
         }
         setExerciseListEnv(false);
-          
-    }
-
-    useEffect(() => {
-        initializeSortable();
-    });
-
-    const initializeSortable = () => {
-        if(sortableContainerRef.current){
-            const instance = Sortable.create(sortableContainerRef.current, {
-                animation: 150,
-                onEnd: handleSortEnd,
-            });
-            setSortableInstance(instance);
-        }
-    }
-
-    const handleSortEnd = (event) => {
-        const { newIndex, oldIndex} = event;
-        setSortedList((prevList) => {
-            if(prevList.length == 0){
-                const newExerciseList = [...workoutExerciseList];
-                const [removed] = newExerciseList.splice(oldIndex, 1);
-                newExerciseList.splice(newIndex, 0, removed);
-                return newExerciseList;
-            }
-            setWorkoutExerciseList(sortedList);
-
-            return null;
-        });
     }
 
     const handleDeleteExercise = (index) => {
@@ -92,62 +59,60 @@ function SessionBuildEnv(){
         const newExercises = [...workoutExerciseList];
         newExercises[index] = newExercise;
         setWorkoutExerciseList(newExercises);
-        
     }
 
     const grabExercises = () => {
         Axios.post('http://localhost:3001/createSession').then((response) => {
-          if(response.data.length != 0){
+          if(response.data.length !== 0){
             setExerciseList(response.data);
-          }else{
+          } else {
             console.log("ERROR");
           }
         });
     }
 
-    return(
+    return (
         <>
-            <div style = {{display: exerciseListEnv ? "none" : "block"}} className="container-fluid text-center pb-4" id="sessionEnv">
-                <input onChange={(e) => {setTitle(e.target.value)}} placeholder="Title"></input>
+            <div style={{ display: exerciseListEnv ? "none" : "block" }} className="container-fluid text-center pb-4" id="sessionEnv">
                 <h6 className="pt-3">Day 1</h6>
                 <div className="form-group row pb-3">
                     <textarea className="form-control col-sm-6 textarea" rows="10" placeholder="Warmup"></textarea>
                 </div>
-                {workoutExerciseList ? Object.values(workoutExerciseList).map((obj, index) => (
+                    {workoutExerciseList ? workoutExerciseList.map((obj, index) => (
                         <SessionExercise
-                        key={`Exercise-${index}`} 
-                        index={index + 1}
-                        eid={obj.props.eid}
-                        name={obj.props.exercise_name}
-                        deleteExercise={() => handleDeleteExercise(index)}
-                        setExerciseList = {() => handleSetExerciseListEnv()}
-                        setIsReplacingExercise = {() => setIsReplacingExercise({isReplace: true, oldExercise: index})}
+                            key={`Exercise-${index}`} 
+                            index={index + 1}
+                            eid={obj.props.eid}
+                            name={obj.props.exercise_name}
+                            deleteExercise={() => handleDeleteExercise(index)}
+                            setExerciseList={() => handleSetExerciseListEnv()}
+                            setIsReplacingExercise={() => setIsReplacingExercise({ isReplace: true, oldExercise: index })}
                         />
-                )) : <p>Loading...</p>}
-                <button className="btn btn-default" onClick={() =>{handleSetExerciseListEnv()}} id="addExercise">Add Exercise</button>            
+                    )) : <p>Loading...</p>}
+                
+                <button className="btn btn-default" onClick={() => { handleSetExerciseListEnv() }} id="addExercise">Add Exercise</button>            
             </div>
-            <div style={{display: exerciseListEnv ? "block" : "none"}} className="container-fluid text-center pt-4 pb-4" id="sessionEnv">
-                <SearchBar/>
+            <div style={{ display: exerciseListEnv ? "block" : "none" }} className="container-fluid text-center pt-4 pb-4" id="sessionEnv">
+                <SearchBar />
                 <ul className="list-group">
                     {exerciseList ? Object.values(exerciseList).map((obj, index) => (
                         <li 
                             key={`preSet-${index}`}
                             className={`list-group-item ${exerciseSelected.eid === obj.eid ? 'active' : ''}`} 
                             id={obj.eid}
-                            onClick={()=>setExerciseSelected(obj)}
+                            onClick={() => setExerciseSelected(obj)}
                         >{obj.name}
                         </li>
                     )) : <p>Loading...</p>}
                 </ul>  
                 <button 
-                    style={{display : Object.entries(exerciseSelected).length === 0 ? 'none' : 'block'}} 
+                    style={{ display : Object.entries(exerciseSelected).length === 0 ? 'none' : 'block' }} 
                     onClick={() => handleSetWorkoutExerciseList()}
                     className="btn btn-outline-secondary">
                     Add exercise
                 </button>  
             </div>
         </>
-        
     );
 }
 

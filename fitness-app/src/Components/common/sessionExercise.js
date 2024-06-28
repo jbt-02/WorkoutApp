@@ -50,8 +50,6 @@ function SessionExercise(props){
             setSets(updateSetId);
             setSetDeleted(false);
         }
-        
-
     }, [sets]);
 
     return(
@@ -80,7 +78,9 @@ function SessionExercise(props){
                                 <span className="input-group-text">{index + 1}</span>
                                 <input className="form-control" type="number" value={(set.reps != 0) ? set.reps : ""} onChange={(e) => handleSetReps(index, {reps: parseInt(e.target.value)}) } placeholder="reps" id={index + 1}></input>
                                 <input className="form-control" type="number" value={(set.weight != 0) ? set.weight : ""} onChange={(e) => handleSetWeight(index, {weight: parseInt(e.target.value)})} placeholder="weight" id={index + 1}></input>
-                                <button onClick={() => handleDeleteSet(index)} className="btn btn-danger btn-sm">X</button>
+                                {sets.length > 1 && (
+                                    <button onClick={() => handleDeleteSet(index)} className="btn btn-danger btn-sm">X</button>
+                                )}
                             </div>
                         </div>
                         )
