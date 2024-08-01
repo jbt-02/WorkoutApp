@@ -64,9 +64,9 @@ function SessionExercise(props){
                     <div className="dropdown dropend">
                         <button type="button" className="btn btn-default btn-xsm dropdown-toggle" data-bs-toggle="dropdown">⋯</button>
                         <ul className="dropdown-menu">
-                            <li><button onClick={() => handleReplacingExercise()} className="dropdown-item" >Replace Exericse</button></li>
+                            <li><button onClick={() => handleReplacingExercise()}  className="dropdown-item" >Replace Exericse</button></li>
                             <li><a className="dropdown-item" href="#">Weight Unit</a></li>
-                            <li><button onClick={() => props.deleteExercise()}className="dropdown-item" >Remove Exercise</button></li>
+                            <li><button onClick={() => {setSets([{id: 0, reps: 0, weight: 0}]);props.deleteExercise();}}className="dropdown-item" >Remove Exercise</button></li>
                         </ul>
                     </div>   
                 </div>
