@@ -17,7 +17,8 @@ function SessionBuildEnv(){
         isReplace: false,
         oldExercise: null
     });
-
+    const [submitModal, setSubmitModal] = useState(false);
+    
     const filteredExercises = Object.values(exerciseList).filter(item => 
         item.name.toLowerCase().includes(searchBarQuery.toLowerCase())
     );
@@ -77,7 +78,11 @@ function SessionBuildEnv(){
     return (
         <>
             <div style={{ display: exerciseListEnv ? "none" : "block" }} className="container-fluid text-center pb-4" id="sessionEnv">
-                <h6 className="pt-3">Day 1</h6>
+                <div className="row">
+                    <h6 className="col-11 pt-3">Day 1</h6>
+                    <button className="col-1 btn btn-primary">Done</button>
+                </div>
+                
                 <div className="form-group row pb-3">
                     <textarea className="form-control col-sm-6 textarea" rows="10" placeholder="Warmup"></textarea>
                 </div>
