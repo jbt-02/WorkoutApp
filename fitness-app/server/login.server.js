@@ -7,11 +7,24 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const db = mysql.createConnection({
+
+/*  PC
     user:"root",
     host:"localhost",
     password:"password",
     database:"fitnessapp"
+
+    MAC
+    user:"root",
+    host:"localhost",
+    password:"password",
+    database:"workout_app"
+*/ 
+const db = mysql.createConnection({
+    user:"root",
+    host:"localhost",
+    password:"password",
+    database:"workout_app"
 });
 
 //Login and Register

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import Sortable from 'sortablejs';
 import Axios from 'axios';
 
 import SearchBar from './searchBar';
@@ -11,17 +10,18 @@ function SessionBuildEnv(){
     const [title, setTitle] = useState("");
     const [exerciseListEnv, setExerciseListEnv] = useState(false);
     const [exerciseList, setExerciseList] = useState({}); 
+    const [searchBarQuery, setSearchBarQuery] = useState('');
     const [exerciseSelected, setExerciseSelected] = useState({});
     const [workoutExerciseList, setWorkoutExerciseList] = useState([]);
     const [isReplacingExercise, setIsReplacingExercise] = useState({
         isReplace: false,
         oldExercise: null
     });
-
-    const sortableContainerRef = useRef(null);
-    const [sortableInstance, setSortableInstance] = useState(null);
-    const [sortedList, setSortedList] = useState([]);
-    const [adjustModal, setAdjustModal] = useState(false);
+    const [submitModal, setSubmitModal] = useState(false);
+    
+    const filteredExercises = Object.values(exerciseList).filter(item => 
+        item.name.toLowerCase().includes(searchBarQuery.toLowerCase())
+    );
 
     const handleSetExerciseListEnv = (setExerciseList) =>{
         if(!setExerciseList){
@@ -29,7 +29,7 @@ function SessionBuildEnv(){
         }
         setExerciseListEnv(true);
 
-        if(Object.keys(exerciseList).length == 0){
+        if(Object.keys(exerciseList).length === 0){
             grabExercises();
         }
     }
@@ -45,7 +45,7 @@ function SessionBuildEnv(){
             handleReplaceExercise(isReplacingExercise.oldExercise, newExercise);
             console.log("replace");
             setIsReplacingExercise({isReplace: false, oldExercise: null});
-        }else{
+        } else {
             setWorkoutExerciseList([
                 ...workoutExerciseList, newExercise
             ]);
@@ -53,39 +53,6 @@ function SessionBuildEnv(){
             console.log(workoutExerciseList);    
         }
         setExerciseListEnv(false);
-          
-    }
-
-    useEffect(() => {
-        initializeSortable();
-    }, [adjustModal]);
-
-    const initializeSortable = () => {
-        if(sortableContainerRef.current){
-            const instance = Sortable.create(sortableContainerRef.current, {
-                animation: 150,
-                onEnd: handleSortEnd,
-            });
-            setSortableInstance(instance);
-        }
-    }
-
-    const handleAdjustButton = () => {
-        setWorkoutExerciseList(sortedList);
-        setAdjustModal(false);
-    }
-
-    const handleSortEnd = (event) => {
-        const { newIndex, oldIndex} = event;
-        setSortedList((prevList) => {
-            if(prevList.length == 0){
-                const newExerciseList = [...workoutExerciseList];
-                const [removed] = newExerciseList.splice(oldIndex, 1);
-                newExerciseList.splice(newIndex, 0, removed);
-                return newExerciseList;
-            }
-            return null;
-        });
     }
 
     const handleDeleteExercise = (index) => {
@@ -96,86 +63,64 @@ function SessionBuildEnv(){
         const newExercises = [...workoutExerciseList];
         newExercises[index] = newExercise;
         setWorkoutExerciseList(newExercises);
-        
     }
 
     const grabExercises = () => {
         Axios.post('http://localhost:3001/createSession').then((response) => {
-          if(response.data.length != 0){
+          if(response.data.length !== 0){
             setExerciseList(response.data);
-          }else{
+          } else {
             console.log("ERROR");
           }
         });
     }
 
-    return(
+    return (
         <>
-            <div style = {{display: exerciseListEnv ? "none" : "block"}} className="container-fluid text-center pb-4" id="sessionEnv">
-                <input onChange={(e) => {setTitle(e.target.value)}} placeholder="Title"></input>
-                <h6 className="pt-3">Day 1</h6>
+            <div style={{ display: exerciseListEnv ? "none" : "block" }} className="container-fluid text-center pb-4" id="sessionEnv">
+                <div className="row">
+                    <h6 className="col-11 pt-3">Day 1</h6>
+                    <button className="col-1 btn btn-primary">Done</button>
+                </div>
+                
                 <div className="form-group row pb-3">
                     <textarea className="form-control col-sm-6 textarea" rows="10" placeholder="Warmup"></textarea>
                 </div>
-                {adjustModal && (
-                    <div className="modal" id="myModal">
-                        <div className="modal-dialog">
-                            <div className="modal-content">                  
-                                <div className="modal-header">
-                                    <h4 className="modal-title">Adjust Exercises</h4>
-                                    <button onClick={() => setAdjustModal(false)} type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div className="modal-body">
-                                    <ul className="list-group" ref={sortableContainerRef}>
-                                        {workoutExerciseList ? workoutExerciseList.map((obj, index) => (
-                                                <li key={index + 1} id={index + obj.eid} className="list-group-item">{obj.name}</li>
-                                            )) : <p>Loading...</p>
-                                        }
-                                    </ul>
-                                </div>
-                                <div class="modal-footer">
-                                    <button onClick={() => handleAdjustButton()} class="btn btn-primary" data-bs-dismiss="modal">Change</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-                {workoutExerciseList ? Object.values(workoutExerciseList).map((obj, index) => (
+                    {workoutExerciseList ? workoutExerciseList.map((obj, index) => (
                         <SessionExercise
-                        key={`Exercise-${index}`} 
-                        index={index + 1}
-                        eid={obj.eid}
-                        name={obj.name}
-                        deleteExercise={() => handleDeleteExercise(index)}
-                        setExerciseList = {() => handleSetExerciseListEnv()}
-                        setIsReplacingExercise = {() => setIsReplacingExercise({isReplace: true, oldExercise: index})}
-                        adjustExerciseModalVisible = {setAdjustModal}
+                            key={`Exercise-${index}`} 
+                            index={index + 1}
+                            eid={obj.props.eid}
+                            name={obj.props.exercise_name}
+                            deleteExercise={() => handleDeleteExercise(index)}
+                            setExerciseList={() => handleSetExerciseListEnv()}
+                            setIsReplacingExercise={() => setIsReplacingExercise({ isReplace: true, oldExercise: index })}
                         />
-                )) : <p>Loading...</p>}
-                <button className="btn btn-default" onClick={() =>{handleSetExerciseListEnv()}} id="addExercise">Add Exercise</button>            
+                    )) : <p>Loading...</p>}
+                
+                <button className="btn btn-default" onClick={() => { handleSetExerciseListEnv() }} id="addExercise">Add Exercise</button>            
             </div>
-            <div style={{display: exerciseListEnv ? "block" : "none"}} className="container-fluid text-center pt-4 pb-4" id="sessionEnv">
-                <SearchBar/>
+            <div style={{ display: exerciseListEnv ? "block" : "none" }} className="container-fluid text-center pt-4 pb-4" id="sessionEnv">
+                <SearchBar query={searchBarQuery} setQuery={setSearchBarQuery}/>
                 <ul className="list-group">
-                    {exerciseList ? Object.values(exerciseList).map((obj, index) => (
+                    {exerciseList ? Object.values(filteredExercises).map((obj, index) => (
                         <li 
                             key={`preSet-${index}`}
                             className={`list-group-item ${exerciseSelected.eid === obj.eid ? 'active' : ''}`} 
                             id={obj.eid}
-                            onClick={()=>setExerciseSelected(obj)}
+                            onClick={() => setExerciseSelected(obj)}
                         >{obj.name}
                         </li>
                     )) : <p>Loading...</p>}
                 </ul>  
                 <button 
-                    style={{display : Object.entries(exerciseSelected).length === 0 ? 'none' : 'block'}} 
+                    style={{ display : Object.entries(exerciseSelected).length === 0 ? 'none' : 'block' }} 
                     onClick={() => handleSetWorkoutExerciseList()}
                     className="btn btn-outline-secondary">
                     Add exercise
                 </button>  
             </div>
         </>
-        
     );
 }
 

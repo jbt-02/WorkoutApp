@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function SessionExercise(props, eid_num, exercise_name){
-    const [eid, setEid] = useState(eid_num);
-    const [name, setName] = useState(exercise_name);
+function SessionExercise(props){
     const [sets, setSets] = useState([{id: 0, reps: 0, weight: 0}]);
     const[setDeleted, setSetDeleted] = useState(false);
     
@@ -52,8 +50,6 @@ function SessionExercise(props, eid_num, exercise_name){
             setSets(updateSetId);
             setSetDeleted(false);
         }
-        
-
     }, [sets]);
 
     return(
@@ -68,10 +64,9 @@ function SessionExercise(props, eid_num, exercise_name){
                     <div className="dropdown dropend">
                         <button type="button" className="btn btn-default btn-xsm dropdown-toggle" data-bs-toggle="dropdown">⋯</button>
                         <ul className="dropdown-menu">
-                            <li><button onClick={() => handleReplacingExercise()} className="dropdown-item" >Replace Exericse</button></li>
+                            <li><button onClick={() => handleReplacingExercise()}  className="dropdown-item" >Replace Exericse</button></li>
                             <li><a className="dropdown-item" href="#">Weight Unit</a></li>
-                            <li><button onClick={() => props.deleteExercise()}className="dropdown-item" >Remove Exercise</button></li>
-                            <li><button onClick={() => props.adjustExerciseModalVisible()}className="dropdown-item" >Adjust Exercises</button></li>
+                            <li><button onClick={() => {setSets([{id: 0, reps: 0, weight: 0}]);props.deleteExercise();}}className="dropdown-item" >Remove Exercise</button></li>
                         </ul>
                     </div>   
                 </div>
@@ -83,7 +78,9 @@ function SessionExercise(props, eid_num, exercise_name){
                                 <span className="input-group-text">{index + 1}</span>
                                 <input className="form-control" type="number" value={(set.reps != 0) ? set.reps : ""} onChange={(e) => handleSetReps(index, {reps: parseInt(e.target.value)}) } placeholder="reps" id={index + 1}></input>
                                 <input className="form-control" type="number" value={(set.weight != 0) ? set.weight : ""} onChange={(e) => handleSetWeight(index, {weight: parseInt(e.target.value)})} placeholder="weight" id={index + 1}></input>
-                                <button onClick={() => handleDeleteSet(index)} className="btn btn-danger btn-sm">X</button>
+                                {sets.length > 1 && (
+                                    <button onClick={() => handleDeleteSet(index)} className="btn btn-danger btn-sm">X</button>
+                                )}
                             </div>
                         </div>
                         )
