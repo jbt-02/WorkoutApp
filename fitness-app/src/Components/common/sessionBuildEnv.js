@@ -80,7 +80,7 @@ function SessionBuildEnv(){
             <div style={{ display: exerciseListEnv ? "none" : "block" }} className="container-fluid text-center pb-4" id="sessionEnv">
                 <div className="row">
                     <h6 className="col-11 pt-3">Day 1</h6>
-                    <button className="col-1 btn btn-primary">Done</button>
+                    <button className="col-1 btn btn-primary" onClick={()=>setSubmitModal(true)}>Done</button>
                 </div>
                 
                 <div className="form-group row pb-3">
@@ -97,7 +97,24 @@ function SessionBuildEnv(){
                             setIsReplacingExercise={() => setIsReplacingExercise({ isReplace: true, oldExercise: index })}
                         />
                     )) : <p>Loading...</p>}
-                
+                    {submitModal && (
+                        <div className="modal" id="myModal">
+                            <div className="modal-dialog">
+                                <div className="modal-content">                  
+                                    <div className="modal-header">
+                                        <h4 className="modal-title">Submit Workout Template</h4>
+                                        <button type="button" className="btn-close" onClick={()=>setSubmitModal(false)}data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <p className="lead">Are you sure you want to save and submit this template?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button className="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}                
                 <button className="btn btn-default" onClick={() => { handleSetExerciseListEnv() }} id="addExercise">Add Exercise</button>            
             </div>
             <div style={{ display: exerciseListEnv ? "block" : "none" }} className="container-fluid text-center pt-4 pb-4" id="sessionEnv">
