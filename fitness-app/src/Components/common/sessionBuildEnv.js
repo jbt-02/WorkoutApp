@@ -26,7 +26,12 @@ function SessionBuildEnv(props){
         goal : goal,
         Exercises: []
     });
+    const [sessionSets, setSessionSets] = useState({});
     
+    const handleSessionSets = (setData) => {
+        setSessionSets(setData);
+    }
+
     const handleSessionJSON = () => {
         workoutExerciseList.map((obj, index) => {
             setSessionJSON(prevJSON => ({
@@ -34,7 +39,8 @@ function SessionBuildEnv(props){
                 Exercises: [...prevJSON.Exercises, {
                     index: index,
                     eid: obj.props.eid,
-                    name: obj.props.exercise_name
+                    name: obj.props.exercise_name,
+                    sets: []
                 }]
             }));
         });
