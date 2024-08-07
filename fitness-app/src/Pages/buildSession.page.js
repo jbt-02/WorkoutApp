@@ -16,7 +16,10 @@ function BuildSessionPage() {
         name={sessionMetaData.name}
         goal={sessionMetaData.goal}
         />
-        <SessionBuildEnv/>
+        <SessionBuildEnv
+        name={sessionMetaData.name}
+        goal={sessionMetaData.goal}
+        />
         
     </>
     );

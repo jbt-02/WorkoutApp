@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
+import Cookies from 'js-cookie';
 
 import SearchBar from './searchBar';
 import SessionExercise from './sessionExercise';
 
 import './css/sessionBuildEnv.style.css';
 
-function SessionBuildEnv(){
-    const [title, setTitle] = useState("");
+function SessionBuildEnv(props){
+    const [title, setTitle] = useState(props.name);
+    const [goal, setGoal] = useState(props.goal);
     const [exerciseListEnv, setExerciseListEnv] = useState(false);
     const [exerciseList, setExerciseList] = useState({}); 
     const [searchBarQuery, setSearchBarQuery] = useState('');
@@ -18,7 +20,27 @@ function SessionBuildEnv(){
         oldExercise: null
     });
     const [submitModal, setSubmitModal] = useState(false);
+    const [sessionJSON, setSessionJSON] = useState({
+        uid: Cookies.get('uid'),
+        name : title,
+        goal : goal,
+        Exercises: []
+    });
     
+    const handleSessionJSON = () => {
+        workoutExerciseList.map((obj, index) => {
+            setSessionJSON(prevJSON => ({
+                ...prevJSON,
+                Exercises: [...prevJSON.Exercises, {
+                    index: index,
+                    eid: obj.props.eid,
+                    name: obj.props.exercise_name
+                }]
+            }));
+        });
+        setSubmitModal(false);
+    }
+
     const filteredExercises = Object.values(exerciseList).filter(item => 
         item.name.toLowerCase().includes(searchBarQuery.toLowerCase())
     );
@@ -109,7 +131,7 @@ function SessionBuildEnv(){
                                         <p className="lead">Are you sure you want to save and submit this template?</p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button className="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                                        <button className="btn btn-primary" onClick={() => handleSessionJSON()} data-bs-dismiss="modal">Submit</button>
                                     </div>
                                 </div>
                             </div>
