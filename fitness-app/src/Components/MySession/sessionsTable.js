@@ -23,7 +23,7 @@ function SessionsTable(props) {
     },[]);
 
     return (
-        <table className="table">
+        <table className="table table-hover">
             <thead>
                 <tr className="table-secondary">
                     <th>Name</th>
