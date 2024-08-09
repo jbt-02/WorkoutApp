@@ -27,9 +27,13 @@ function SessionBuildEnv(props){
         Exercises: []
     });
     const [sessionSets, setSessionSets] = useState({});
-    
-    const handleSessionSets = (setData) => {
-        setSessionSets(setData);
+
+    const handleSessionSets = (id, setData) => {
+        setSessionJSON(prevJSON => ({
+            ...prevJSON,
+            [id]: setData
+        }));
+        console.log(setData);
     }
 
     const handleSessionJSON = () => {
@@ -45,6 +49,7 @@ function SessionBuildEnv(props){
             }));
         });
         setSubmitModal(false);
+        
     }
 
     const filteredExercises = Object.values(exerciseList).filter(item => 
@@ -66,7 +71,11 @@ function SessionBuildEnv(props){
         console.log(isReplacingExercise);
 
         const newExercise = (
-            <SessionExercise key={workoutExerciseList.length + 1} eid={Object.values(exerciseSelected)[0]} exercise_name={Object.values(exerciseSelected)[1]}/>
+            <SessionExercise 
+            key={workoutExerciseList.length + 1} 
+            eid={Object.values(exerciseSelected)[0]} 
+            exercise_name={Object.values(exerciseSelected)[1]}
+            />
         );
         
         if(isReplacingExercise.isReplace){
@@ -123,6 +132,7 @@ function SessionBuildEnv(props){
                             deleteExercise={() => handleDeleteExercise(index)}
                             setExerciseList={() => handleSetExerciseListEnv()}
                             setIsReplacingExercise={() => setIsReplacingExercise({ isReplace: true, oldExercise: index })}
+                            onSetChange={handleSessionSets}
                         />
                     )) : <p>Loading...</p>}
                     {submitModal && (

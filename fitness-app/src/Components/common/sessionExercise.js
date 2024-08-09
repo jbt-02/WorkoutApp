@@ -50,6 +50,9 @@ function SessionExercise(props){
             setSets(updateSetId);
             setSetDeleted(false);
         }
+
+        props.onSetChange(props.index, sets);
+        //props.isGettingSets(false);
     }, [sets]);
 
     return(
