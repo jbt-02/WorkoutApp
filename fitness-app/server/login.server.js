@@ -120,6 +120,24 @@ app.post("/submitTemplate", (req,res) => {
         });
 });
 
+app.post("/displaySessions", (req,res) => {
+    db.query(
+        "SELECT * FROM routine",
+        (err, result) => {
+            if(err){
+                res.send({err:err});
+                console.log(err);
+            }else if(result){
+                res.send(result);
+                console.log(result);
+            }else{
+                res.send({message:"No Routines"});
+                console.log("ERR");
+            }
+        }
+    );
+})
+
 app.listen(3001, () => {
     console.log("running");
 });
