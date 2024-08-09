@@ -29,7 +29,7 @@ function SessionBuildEnv(props){
         Exercises: [],
         Sets: []
     });
-    const [submitStatus, setSubmitStatus] = useState("");
+    const [submitStatus, setSubmitStatus] = useState(false);
 
     const submitTemplate = () => {
         Axios.post('http://localhost:3001/submitTemplate', {
@@ -37,10 +37,10 @@ function SessionBuildEnv(props){
         sessionJSON: sessionJSON
         }).then((response) => {
           if(response.data.length != 0){
-            setSubmitStatus('Success');
+            setSubmitStatus(true);
             //navigate('/userPage'); 
           }else{
-            setSubmitStatus("Something went wrong. Try again.");
+            setSubmitStatus(false);
           }
           //console.log(response.data);
         });
@@ -70,8 +70,7 @@ function SessionBuildEnv(props){
             }));
         });
         setSubmitModal(false);
-        submitTemplate();
-        
+        setSubmitStatus(true);
     }
 
     const filteredExercises = Object.values(exerciseList).filter(item => 
@@ -134,6 +133,12 @@ function SessionBuildEnv(props){
           }
         });
     }
+
+    useEffect(() => {
+        if(submitStatus){
+            submitTemplate();
+        }
+    }, [submitStatus]);
 
     return (
         <>

@@ -111,6 +111,7 @@ app.post("/createSession", (req,res) => {
 app.post("/submitTemplate", (req,res) => {
     const uid = req.body.uid;
     const session_JSON = JSON.stringify(req.body.sessionJSON);
+    console.log(session_JSON);
     //console.log("RECEIVED, " + session_JSON);
     db.query("INSERT INTO routine (uid, routineJSON) VALUES (?,?)",
         [uid, session_JSON],
