@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from "react-router-dom";
 import Axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -30,6 +31,7 @@ function SessionBuildEnv(props){
         Sets: []
     });
     const [submitStatus, setSubmitStatus] = useState(false);
+    const navigate = useNavigate();
 
     const submitTemplate = () => {
         Axios.post('http://localhost:3001/submitTemplate', {
@@ -38,7 +40,7 @@ function SessionBuildEnv(props){
         }).then((response) => {
           if(response.data.length != 0){
             setSubmitStatus(true);
-            //navigate('/userPage'); 
+            navigate('/userPage'); 
           }else{
             setSubmitStatus(false);
           }
@@ -47,7 +49,6 @@ function SessionBuildEnv(props){
     }
 
     const handleSessionSets = (id, setData) => {
-        console.log(setData);
         if(id - 1 > sessionSets.length){
             setSessionSets([...sessionSets, setData]);
         }else{
@@ -89,8 +90,6 @@ function SessionBuildEnv(props){
     }
 
     const handleSetWorkoutExerciseList = () =>{
-        console.log(isReplacingExercise);
-
         const newExercise = (
             <SessionExercise 
             key={workoutExerciseList.length + 1} 
@@ -101,14 +100,11 @@ function SessionBuildEnv(props){
         
         if(isReplacingExercise.isReplace){
             handleReplaceExercise(isReplacingExercise.oldExercise, newExercise);
-            console.log("replace");
             setIsReplacingExercise({isReplace: false, oldExercise: null});
         } else {
             setWorkoutExerciseList([
                 ...workoutExerciseList, newExercise
-            ]);
-            
-            console.log(workoutExerciseList);    
+            ]);    
         }
         setExerciseListEnv(false);
     }
@@ -137,6 +133,7 @@ function SessionBuildEnv(props){
     useEffect(() => {
         if(submitStatus){
             submitTemplate();
+            navigate('/userPage'); 
         }
     }, [submitStatus]);
 
