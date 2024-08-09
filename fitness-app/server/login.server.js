@@ -1,11 +1,13 @@
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 
 /*  PC
@@ -105,6 +107,18 @@ app.post("/createSession", (req,res) => {
         }
     );
 });
+
+app.post("/submitTemplate", (req,res) => {
+    const uid = req.body.uid;
+    const session_JSON = JSON.stringify(req.body.sessionJSON);
+    //console.log("RECEIVED, " + session_JSON);
+    db.query("INSERT INTO routine (uid, routineJSON) VALUES (?,?)",
+        [uid, session_JSON],
+        (err,result) => {
+            console.log(err);
+        });
+});
+
 app.listen(3001, () => {
     console.log("running");
 });

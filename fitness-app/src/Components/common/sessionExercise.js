@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 
 function SessionExercise(props){
-    const [sets, setSets] = useState([{id: 0, reps: 0, weight: 0}]);
+    const [sets, setSets] = useState([{eid: props.eid, id: 0, reps: 0, weight: 0}]);
     const[setDeleted, setSetDeleted] = useState(false);
     
     const handleSetSets = () => {
-        setSets([...sets, {id: sets.length, reps: 0, weight: 0}]);
+        setSets([...sets, {eid: props.eid, id: sets.length, reps: 0, weight: 0}]);
     };
 
     const handleDeleteSet = (index) => {

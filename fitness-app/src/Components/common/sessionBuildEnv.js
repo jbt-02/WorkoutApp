@@ -27,10 +27,27 @@ function SessionBuildEnv(props){
         name : title,
         goal : goal,
         Exercises: [],
-        Sets: sessionSets
+        Sets: []
     });
+    const [submitStatus, setSubmitStatus] = useState("");
+
+    const submitTemplate = () => {
+        Axios.post('http://localhost:3001/submitTemplate', {
+        uid: sessionJSON["uid"],
+        sessionJSON: sessionJSON
+        }).then((response) => {
+          if(response.data.length != 0){
+            setSubmitStatus('Success');
+            //navigate('/userPage'); 
+          }else{
+            setSubmitStatus("Something went wrong. Try again.");
+          }
+          //console.log(response.data);
+        });
+    }
 
     const handleSessionSets = (id, setData) => {
+        console.log(setData);
         if(id - 1 > sessionSets.length){
             setSessionSets([...sessionSets, setData]);
         }else{
@@ -48,10 +65,12 @@ function SessionBuildEnv(props){
                     index: index,
                     eid: obj.props.eid,
                     name: obj.props.exercise_name,
-                }]
+                }],
+                Sets: sessionSets
             }));
         });
         setSubmitModal(false);
+        submitTemplate();
         
     }
 
@@ -97,6 +116,7 @@ function SessionBuildEnv(props){
 
     const handleDeleteExercise = (index) => {
         setWorkoutExerciseList(workoutExerciseList.filter((exercise, i) => i !== index));
+        setSessionSets(sessionSets.filter((exercise, i) => i !== index));
     }
 
     const handleReplaceExercise = (index, newExercise) => {
