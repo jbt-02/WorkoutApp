@@ -20,20 +20,24 @@ function SessionBuildEnv(props){
         oldExercise: null
     });
     const [submitModal, setSubmitModal] = useState(false);
+    const [sessionSets, setSessionSets] = useState([]);
+
     const [sessionJSON, setSessionJSON] = useState({
         uid: Cookies.get('uid'),
         name : title,
         goal : goal,
-        Exercises: []
+        Exercises: [],
+        Sets: sessionSets
     });
-    const [sessionSets, setSessionSets] = useState({});
 
     const handleSessionSets = (id, setData) => {
-        setSessionJSON(prevJSON => ({
-            ...prevJSON,
-            [id]: setData
-        }));
-        console.log(setData);
+        if(id - 1 > sessionSets.length){
+            setSessionSets([...sessionSets, setData]);
+        }else{
+            const updatedSetsArr = [...sessionSets];
+            updatedSetsArr[id - 1] = setData;
+            setSessionSets(updatedSetsArr);
+        }
     }
 
     const handleSessionJSON = () => {
@@ -44,7 +48,6 @@ function SessionBuildEnv(props){
                     index: index,
                     eid: obj.props.eid,
                     name: obj.props.exercise_name,
-                    sets: []
                 }]
             }));
         });
