@@ -6,7 +6,7 @@ import LandingPage from "./Pages/landing.page";
 import UserPage from "./Pages/userPage.page";
 import MySessionPage from "./Pages/mySession.page";
 import BuildSessionPage from "./Pages/buildSession.page";
-
+import TrackSessionPage from "./Pages/trackSession.page";
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
         <Route path = "/userPage" element = {<UserPage />} />
         <Route path = "/mySessions" element = {<MySessionPage/>}/>
         <Route path = "/createSession" element = {<BuildSessionPage/>}/>
+        <Route path="/trackSession" element={<TrackSessionPage/>}/>
       </Routes>
     </BrowserRouter>
       

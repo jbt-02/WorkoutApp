@@ -25,6 +25,7 @@ function MySessionPage() {
     
         navigate('/createSession');
       };
+      
 
     const handleChange = event => {
         setSessionMetaData({
