@@ -24,11 +24,11 @@ function TrackSessionEnv(props){
     return(
         <div className="container-fluid pb-4" id="sessionEnv">
             <div className="row text-center">
-                <div className="col-3">
+                <div className="col-1">
                     <h2>{sessionName}</h2>
                 </div>
-                <div className = "col">
-                    <h4>Day 1</h4>
+                <div className = "col-2 pt-2">
+                    <h6>Day 1</h6>
                 </div>
             </div>
             <div className="col">Goal: {goal}</div>
