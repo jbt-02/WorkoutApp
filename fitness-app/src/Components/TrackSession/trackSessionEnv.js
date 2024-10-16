@@ -8,9 +8,15 @@ function TrackSessionEnv(props){
     const [templateJSON, setTemplateJSON] = useState(JSON.parse(props.sessionTemplate));
     const[sessionName, setSessionName] = useState(templateJSON.name);
     const[exercises, setExercises] = useState(templateJSON.Exercises);
-    const[sets, setSets] = useState(templateJSON.Sets)
-    const[goal, setGoal] = useState(templateJSON.goal)
-    
+    const[sets, setSets] = useState(templateJSON.Sets);
+    const[goal, setGoal] = useState(templateJSON.goal);
+    const [searchBarQuery, setSearchBarQuery] = useState('');
+    const [exerciseSelected, setExerciseSelected] = useState({});
+    const [isReplacingExercise, setIsReplacingExercise] = useState({
+        isReplace: false,
+        oldExercise: null
+    });
+
     const handleSessionSets = (id, setData) => {
         if(id - 1 > sets.length){
             setSets([...sets, setData]);
@@ -19,6 +25,38 @@ function TrackSessionEnv(props){
             updatedSetsArr[id - 1] = setData;
             setSets(updatedSetsArr);
         }
+    }
+
+    const handleSetWorkoutExerciseList = () =>{
+        const newExercise = (
+            <SessionExercise 
+            key={exercises.length + 1} 
+            eid={Object.values(exerciseSelected)[0]} 
+            exercise_name={Object.values(exerciseSelected)[1]}
+            />
+        );
+        
+        if(isReplacingExercise.isReplace){
+            handleReplaceExercise(isReplacingExercise.oldExercise, newExercise);
+            setIsReplacingExercise({isReplace: false, oldExercise: null});
+        } else {
+            setExercises([
+                ...exercises, newExercise
+            ]);    
+        }
+        //setExerciseListEnv(false);
+    }
+    
+    const handleDeleteExercise = (index) => {
+        setExercises(exercises.filter((exercise, i) => i !== index));
+        setSets(sets.filter((exercise, i) => i !== index));
+    }
+    
+    
+    const handleReplaceExercise = (index, newExercise) => {
+        const newExercises = [...exercises];
+        newExercises[index] = newExercise;
+        setExercises(newExercises);
     }
     
     return(
@@ -42,10 +80,14 @@ function TrackSessionEnv(props){
                     index={index + 1}
                     eid={obj.eid}
                     name={obj.name}
+                    deleteExercise={() => handleDeleteExercise(index)}
+                    //setExerciseList={() => handleSetExerciseListEnv()}
+                    setIsReplacingExercise={() => setIsReplacingExercise({ isReplace: true, oldExercise: index })}
                     onSetChange={handleSessionSets}
                     initialSets={sets[index]}
                 />
             )) : <p>Loading...</p>}
+            
         </div>
     );
 }
