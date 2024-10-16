@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 function SessionExercise(props){
-    const [sets, setSets] = useState([{eid: props.eid, id: 0, reps: 0, weight: 0}]);
+    const [sets, setSets] = useState((props.initialSets) ? props.initialSets : [{eid: props.eid, id: 0, reps: 0, weight: 0}]);
     const[setDeleted, setSetDeleted] = useState(false);
     
     const handleSetSets = () => {

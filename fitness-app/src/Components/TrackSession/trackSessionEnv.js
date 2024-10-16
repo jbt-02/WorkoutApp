@@ -43,6 +43,7 @@ function TrackSessionEnv(props){
                     eid={obj.eid}
                     name={obj.name}
                     onSetChange={handleSessionSets}
+                    initialSets={sets[index]}
                 />
             )) : <p>Loading...</p>}
         </div>
