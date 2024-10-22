@@ -136,6 +136,14 @@ app.post("/displaySessions", (req,res) => {
             }
         }
     );
+});
+
+app.post("/setNewTemplate", (req, res) => {
+    
+})
+
+app.post("/updateTemplate", (req, res) => {
+    
 })
 
 app.listen(3001, () => {

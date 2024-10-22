@@ -32,10 +32,26 @@ function TrackSessionEnv(props){
         Sets: []
     });
     const [submitStatus, setSubmitStatus] = useState(false);
+    const [isNewTemplate, setIsNewTemplate] = useState(false);
     const navigate = useNavigate();
+    
 
     const submitTemplate = () => {
-        Axios.post('http://localhost:3001/submitTemplate', {
+        if(isNewTemplate){
+            Axios.post('http://localhost:3001/setNewTemplate', {
+            uid: sessionJSON["uid"],
+            sessionJSON: sessionJSON
+            }).then((response) => {
+            if(response.data.length != 0){
+                setSubmitStatus(true);
+                navigate('/userPage'); 
+            }else{
+                setSubmitStatus(false);
+            }
+            });
+            return;
+        }
+        Axios.post('http://localhost:3001/updateTemplate', {
         uid: sessionJSON["uid"],
         sessionJSON: sessionJSON
         }).then((response) => {
@@ -45,7 +61,6 @@ function TrackSessionEnv(props){
           }else{
             setSubmitStatus(false);
           }
-          //console.log(response.data);
         });
     }
 
@@ -174,8 +189,8 @@ function TrackSessionEnv(props){
                                         <p className="lead">Do you want to save this as a new Template?</p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button className="btn btn-primary" onClick={() => handleSessionJSON()} data-bs-dismiss="modal">Save as New Template</button>
-                                        <button className="btn btn-primary" onClick={() => handleSessionJSON()} data-bs-dismiss="modal">No</button>
+                                        <button className="btn btn-primary" onClick={() => {handleSessionJSON(); setIsNewTemplate(true);}} data-bs-dismiss="modal">Save as New Template</button>
+                                        <button className="btn btn-primary" onClick={() => {handleSessionJSON(); setIsNewTemplate(false);}} data-bs-dismiss="modal">No</button>
                                     </div>
                                 </div>
                             </div>

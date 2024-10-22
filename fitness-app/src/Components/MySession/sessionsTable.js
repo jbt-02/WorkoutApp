@@ -36,6 +36,7 @@ function SessionsTable(props) {
                 </tr>
             </thead>
             <tbody>
+                
                 {hasSessions ? sessions.map((obj, index) => (<tr key={index} id={obj.rid} onClick={() =>{localStorage.setItem('trackMetaData', JSON.stringify(obj));
 navigate('/trackSession')}}><td>{JSON.parse(obj.routineJSON).name}</td>
                     <td>{String(obj.template_created).slice(0,10)}</td></tr>)) : (<tr><td>No Workouts</td></tr>)
