@@ -122,7 +122,7 @@ function TrackSessionEnv(props){
     }
 
     const grabExercises = () => {
-        Axios.post('http://localhost:3001/trackSession').then((response) => {
+        Axios.post('http://localhost:3001/createSession').then((response) => {
           if(response.data.length !== 0){
             setExerciseList(response.data);
           } else {
@@ -153,8 +153,8 @@ function TrackSessionEnv(props){
                         <SessionExercise
                             key={`Exercise-${index}`} 
                             index={index + 1}
-                            eid={/*obj[index].eid*/ 0}
-                            name={/*obj[index].name*/ "A"}
+                            eid={(obj.eid) ? obj.eid : obj.props.eid}
+                            name={(obj.name) ? obj.name : obj.props.exercise_name}
                             deleteExercise={() => handleDeleteExercise(index)}
                             setExerciseList={() => handleSetExerciseListEnv()}
                             setIsReplacingExercise={() => setIsReplacingExercise({ isReplace: true, oldExercise: index })}
@@ -171,10 +171,11 @@ function TrackSessionEnv(props){
                                         <button type="button" className="btn-close" onClick={()=>setSubmitModal(false)}data-bs-dismiss="modal"></button>
                                     </div>
                                     <div className="modal-body">
-                                        <p className="lead">Are you sure you want to save and submit this template?</p>
+                                        <p className="lead">Do you want to save this as a new Template?</p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button className="btn btn-primary" onClick={() => handleSessionJSON()} data-bs-dismiss="modal">Submit</button>
+                                        <button className="btn btn-primary" onClick={() => handleSessionJSON()} data-bs-dismiss="modal">Save as New Template</button>
+                                        <button className="btn btn-primary" onClick={() => handleSessionJSON()} data-bs-dismiss="modal">No</button>
                                     </div>
                                 </div>
                             </div>
