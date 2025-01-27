@@ -26,6 +26,7 @@ function TrackSessionEnv(props){
 
     const [sessionJSON, setSessionJSON] = useState({
         uid: Cookies.get('uid'),
+        rid: props.rid,
         name : title,
         goal : goal,
         Exercises: [],
@@ -191,6 +192,7 @@ function TrackSessionEnv(props){
                                     <div class="modal-footer">
                                         <button className="btn btn-primary" onClick={() => {handleSessionJSON(); setIsNewTemplate(true);}} data-bs-dismiss="modal">Save as New Template</button>
                                         <button className="btn btn-primary" onClick={() => {handleSessionJSON(); setIsNewTemplate(false);}} data-bs-dismiss="modal">No</button>
+                                        <button className="btn btn-primary" onClick={() => setSubmitModal(false)}>Cancel</button>
                                     </div>
                                 </div>
                             </div>
